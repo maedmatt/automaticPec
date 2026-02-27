@@ -1,0 +1,19 @@
+# credentials
+.env
+
+# OS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+
+# documents (large PDFs, personal data)
+files/
+.claude/

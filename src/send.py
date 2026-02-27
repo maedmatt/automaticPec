@@ -203,8 +203,16 @@ def main() -> None:
             sys.exit(1)
         log.info("waiting %.1fs until %s", remaining, target_time)
 
-        # Wait until T-30s to connect (no long-lived connections)
-        spin_wait(target_ts - 30.0)
+        # Heartbeat every 5 min until T-30s
+        connect_at = target_ts - 30.0
+        while time.time() < connect_at:
+            left = target_ts - time.time()
+            if left <= 30.0:
+                break
+            mins = int(left // 60)
+            secs = int(left % 60)
+            log.info("T-%dm%ds", mins, secs)
+            time.sleep(min(300.0, left - 30.0))
 
     # Phase 2: connect + authenticate (~0.5s per connection)
     for conn, _, subject, _ in conns:

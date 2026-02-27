@@ -209,9 +209,9 @@ def main() -> None:
             left = target_ts - time.time()
             if left <= 30.0:
                 break
-            mins = int(left // 60)
-            secs = int(left % 60)
-            log.info("T-%dm%ds", mins, secs)
+            hours = int(left // 3600)
+            mins = int((left % 3600) // 60)
+            log.info("%dh %02dm left — firing at %s", hours, mins, target_time.strftime("%H:%M:%S"))
             time.sleep(min(300.0, left - 30.0))
 
     # Phase 2: connect + authenticate (~0.5s per connection)

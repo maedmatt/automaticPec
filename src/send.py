@@ -91,7 +91,9 @@ class Connection:
         return self.smtp
 
     def connect(self) -> None:
-        self.smtp = smtplib.SMTP_SSL(self.server, self.port, timeout=300)
+        self.smtp = smtplib.SMTP_SSL(
+            self.server, self.port, timeout=300, local_hostname=self.server
+        )
         s = self._s()
         _ = s.login(self.user, self.password)
         assert s.sock is not None

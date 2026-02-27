@@ -11,7 +11,7 @@ __pycache__/
 venv/
 
 # personal documents (PDFs, IDs)
-files/
+# files/
 
 # project context
 .claude/

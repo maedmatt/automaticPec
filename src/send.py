@@ -1,8 +1,8 @@
 """Send PEC emails at a precise time with pre-warmed SMTP connections.
 
-Strategy: open connections and authenticate well before the target time,
-pre-stage MAIL FROM + RCPT TO ~3s before, then fire only DATA at the
-exact moment. This reduces the critical path from 4 to 2 SMTP round-trips.
+Strategy: connect ~30s before target, pre-stage MAIL FROM + RCPT TO ~3s
+before, then fire only DATA at the exact moment. This reduces the critical
+path from 4 to 2 SMTP round-trips without long-lived connections.
 """
 
 from __future__ import annotations
@@ -67,15 +67,13 @@ def build_message(
 
 
 class Connection:
-    """Pre-warmed SMTP_SSL connection with NOOP keepalive."""
+    """SMTP_SSL connection for pre-staged sending."""
 
     server: str
     port: int
     user: str
     password: str
     smtp: smtplib.SMTP_SSL | None
-    _stop: threading.Event
-    _keepalive: threading.Thread | None
 
     def __init__(self, server: str, port: int, user: str, password: str):
         self.server = server
@@ -83,8 +81,6 @@ class Connection:
         self.user = user
         self.password = password
         self.smtp = None
-        self._stop = threading.Event()
-        self._keepalive = None
 
     def _s(self) -> smtplib.SMTP_SSL:
         assert self.smtp is not None
@@ -100,27 +96,6 @@ class Connection:
         s.sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
         s.sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
         log.info("connected and authenticated")
-
-    def start_keepalive(self, interval: int = 60) -> None:
-        def _loop() -> None:
-            while not self._stop.wait(interval):
-                try:
-                    _ = self._s().noop()
-                    log.debug("NOOP ok")
-                except Exception:
-                    log.warning("NOOP failed, reconnecting")
-                    try:
-                        self.connect()
-                    except Exception as e:
-                        log.error("reconnect failed: %s", e)
-
-        self._keepalive = threading.Thread(target=_loop, daemon=True)
-        self._keepalive.start()
-
-    def stop_keepalive(self) -> None:
-        self._stop.set()
-        if self._keepalive:
-            self._keepalive.join(timeout=5)
 
     def pre_stage(self, from_addr: str, to_addr: str) -> None:
         """Send MAIL FROM + RCPT TO — the first 2 of 4 round-trips."""
@@ -210,7 +185,7 @@ def main() -> None:
         emails.append((recipient, subject, message))
         log.info("built: %s → %s (%d bytes)", subject, recipient, len(message))
 
-    # Phase 1: open one connection per email, start keepalive
+    # Phase 1: prepare connection objects
     conns: list[tuple[Connection, str, str, str]] = []
     for recipient, subject, message in emails:
         conn = Connection(
@@ -219,10 +194,7 @@ def main() -> None:
             smtp_user,
             smtp_password,
         )
-        conn.connect()
-        conn.start_keepalive()
         conns.append((conn, recipient, subject, message))
-    log.info("%d connections ready", len(conns))
 
     if not args.now:
         remaining = target_ts - time.time()
@@ -231,11 +203,19 @@ def main() -> None:
             sys.exit(1)
         log.info("waiting %.1fs until %s", remaining, target_time)
 
-        # Phase 2: pre-stage MAIL FROM + RCPT TO ~3s before target
+        # Wait until T-30s to connect (no long-lived connections)
+        spin_wait(target_ts - 30.0)
+
+    # Phase 2: connect + authenticate (~0.5s per connection)
+    for conn, _, subject, _ in conns:
+        conn.connect()
+    log.info("%d connections ready at %s", len(conns), ts())
+
+    if not args.now:
+        # Pre-stage MAIL FROM + RCPT TO ~3s before target
         spin_wait(target_ts - 3.0)
 
     for conn, recipient, subject, _ in conns:
-        conn.stop_keepalive()
         conn.pre_stage(smtp_user, recipient)
         log.info("pre-staged: %s at %s", subject, ts())
 

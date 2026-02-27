@@ -1,0 +1,20 @@
+[project]
+name = "automaticpec"
+version = "0.1.0"
+description = "Send PEC emails at precise times for hunting spot applications"
+requires-python = ">=3.11"
+dependencies = [
+    "python-dotenv>=1.2.1",
+    "tyro>=1.0.8",
+]
+
+[tool.basedpyright]
+reportAny = false
+reportExplicitAny = false
+reportUnusedCallResult = false
+
+[dependency-groups]
+dev = [
+    "basedpyright>=1.38.2",
+    "ruff>=0.15.4",
+]

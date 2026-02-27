@@ -1,0 +1,40 @@
+[settings]
+target_time = "2026-02-01T00:00:00"
+smtp_server = "smtps.pec.aruba.it"
+smtp_port = 465
+files_dir = "files/2026"
+body = """Buongiorno,
+allego richiesta di adesione al Vostro ambito.
+Cordiali saluti"""
+
+[[emails]]
+recipient = "ambitoterritorialecaccia6@pec.it_TEST"
+subject = "Domanda adesione MN-ATC6 Mario Calabria"
+attachments = [
+    "Domanda-adesione-MN-ATC-6-2026-MarioCalabria.pdf",
+    "DocumentoIdentita_MarioCalabria.pdf",
+]
+
+[[emails]]
+recipient = "ambitoterritorialecaccia6@pec.it_TEST"
+subject = "Domanda adesione MN-ATC6 Matteo Calabria"
+attachments = [
+    "Domanda-adesione-MN-ATC-6-2026-MatteoCalabria.pdf",
+    "DocumentoIdentita_MatteoCalabria.pdf",
+]
+
+[[emails]]
+recipient = "atc4mn@pecimprese.it_TEST"
+subject = "Domanda adesione MN-ATC4 Mario Calabria"
+attachments = [
+    "Domanda-adesione-MN-ATC-4-2026-MarioCalabria.pdf",
+    "DocumentoIdentita_MarioCalabria.pdf",
+]
+
+[[emails]]
+recipient = "atc4mn@pecimprese.it_TEST"
+subject = "Domanda adesione MN-ATC4 Matteo Calabria"
+attachments = [
+    "Domanda-adesione-MN-ATC-4-2026-MatteoCalabria.pdf",
+    "DocumentoIdentita_MatteoCalabria.pdf",
+]

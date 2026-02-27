@@ -10,10 +10,8 @@ __pycache__/
 .venv/
 venv/
 
-# IDE
-.vscode/
-.idea/
-
-# documents (large PDFs, personal data)
+# personal documents (PDFs, IDs)
 files/
+
+# project context
 .claude/

@@ -137,7 +137,35 @@ def test4(user: str, pwd: str) -> None:
     _ = s.quit()
 
 
-TESTS = {"1": test1, "2": test2, "3": test3, "4": test4}
+def test5(user: str, pwd: str) -> None:
+    """4 emails on 2 connections, 2 sequential each, fired in parallel."""
+    log.info("=== TEST 5: 2x2 parallel connections, sequential sends ===")
+    pdf = Path("files/2026/DocumentoIdentita_MatteoCalabria.pdf")
+    msgs = [build_msg(user, user, f"Test 5{c} - 2x2", pdf) for c in "abcd"]
+
+    conns = [connect(user, pwd), connect(user, pwd)]
+    fire = Event()
+
+    def send_pair(s: smtplib.SMTP_SSL, pair: list[str], label: str) -> None:
+        _ = fire.wait()
+        for i, msg in enumerate(pair):
+            t0 = time.perf_counter()
+            s.sendmail(user, user, msg)
+            dt = time.perf_counter() - t0
+            log.info("%s email %d sent at %s (%.3fs)", label, i + 1, ts(), dt)
+
+    t1 = Thread(target=send_pair, args=(conns[0], msgs[0:2], "conn1"))
+    t2 = Thread(target=send_pair, args=(conns[1], msgs[2:4], "conn2"))
+    t1.start()
+    t2.start()
+    fire.set()
+    t1.join()
+    t2.join()
+    for c in conns:
+        _ = c.quit()
+
+
+TESTS = {"1": test1, "2": test2, "3": test3, "4": test4, "5": test5}
 
 
 def main() -> None:

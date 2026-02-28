@@ -1,5 +1,5 @@
 [settings]
-target_time = "2026-02-28T16:30:00+01:00"
+target_time = "2026-03-01T00:00:00+01:00"
 smtp_server = "smtps.pec.aruba.it"
 smtp_port = 465
 files_dir = "files/2026"
@@ -9,21 +9,21 @@ per la stagione venatoria 2026/2027.
 Cordiali saluti"""
 
 [[emails]]
-recipient = "mario.calabria@pec.it"
+recipient = "ambitoterritorialecaccia6@pec.it"
 subject = "Domanda adesione MN-ATC6 Mario Calabria"
 attachments = ["Domanda-adesione-MN-ATC-6-2026-MarioCalabria.pdf"]
 
 [[emails]]
-recipient = "mario.calabria@pec.it"
+recipient = "ambitoterritorialecaccia6@pec.it"
 subject = "Domanda adesione MN-ATC6 Matteo Calabria"
 attachments = ["Domanda-adesione-MN-ATC-6-2026-MatteoCalabria.pdf"]
 
 [[emails]]
-recipient = "mario.calabria@pec.it"
+recipient = "atc4mn@pecimprese.it"
 subject = "Domanda adesione MN-ATC4 Mario Calabria"
 attachments = ["Domanda-adesione-MN-ATC-4-2026-MarioCalabria.pdf"]
 
 [[emails]]
-recipient = "mario.calabria@pec.it"
+recipient = "atc4mn@pecimprese.it"
 subject = "Domanda adesione MN-ATC4 Matteo Calabria"
 attachments = ["Domanda-adesione-MN-ATC-4-2026-MatteoCalabria.pdf"]

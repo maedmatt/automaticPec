@@ -34,8 +34,9 @@ def main() -> None:
     msg["To"] = to
     msg["Subject"] = "Smoke test"
 
-    log.info("connecting to smtps.pec.aruba.it:465")
-    with smtplib.SMTP_SSL("smtps.pec.aruba.it", 465) as s:
+    server = "smtps.pec.aruba.it"
+    log.info("connecting to %s:465", server)
+    with smtplib.SMTP_SSL(server, 465, local_hostname=server) as s:
         _ = s.login(user, pwd)
         log.info("authenticated")
         s.sendmail(user, to, msg.as_string())

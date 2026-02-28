@@ -97,10 +97,10 @@ class Connection:
         s.sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
         log.info("connected and authenticated")
 
-    def pre_stage(self, from_addr: str, to_addr: str) -> None:
+    def pre_stage(self, to_addr: str) -> None:
         """Send MAIL FROM + RCPT TO — the first 2 of 4 round-trips."""
         s = self._s()
-        code, resp = s.mail(from_addr)
+        code, resp = s.mail(self.user)
         if code != 250:
             raise smtplib.SMTPResponseException(code, resp)
         code, resp = s.rcpt(to_addr)
@@ -211,7 +211,12 @@ def main() -> None:
                 break
             hours = int(left // 3600)
             mins = int((left % 3600) // 60)
-            log.info("%dh %02dm left — firing at %s", hours, mins, target_time.strftime("%H:%M:%S"))
+            log.info(
+                "%dh %02dm left — firing at %s",
+                hours,
+                mins,
+                target_time.strftime("%H:%M:%S"),
+            )
             time.sleep(min(300.0, left - 30.0))
 
     # Phase 2: connect + authenticate (~0.5s per connection)
@@ -224,7 +229,7 @@ def main() -> None:
         spin_wait(target_ts - 3.0)
 
     for conn, recipient, subject, _ in conns:
-        conn.pre_stage(smtp_user, recipient)
+        conn.pre_stage(recipient)
         log.info("pre-staged: %s at %s", subject, ts())
 
     # Phase 3: fire all DATA simultaneously at target time

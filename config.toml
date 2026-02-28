@@ -1,40 +1,29 @@
 [settings]
-target_time = "2026-02-28T00:00:00"
+target_time = "2026-02-28T16:30:00+01:00"
 smtp_server = "smtps.pec.aruba.it"
 smtp_port = 465
 files_dir = "files/2026"
-body = """Buongiorno,
-allego richiesta di adesione al Vostro ambito.
+body = """Spett.le ATC,
+con la presente si trasmette in allegato la domanda di adesione
+per la stagione venatoria 2026/2027.
 Cordiali saluti"""
 
 [[emails]]
 recipient = "mario.calabria@pec.it"
 subject = "Domanda adesione MN-ATC6 Mario Calabria"
-attachments = [
-    "Domanda-adesione-MN-ATC-6-2026-MarioCalabria.pdf",
-    "DocumentoIdentita_MarioCalabria.pdf",
-]
+attachments = ["Domanda-adesione-MN-ATC-6-2026-MarioCalabria.pdf"]
 
 [[emails]]
 recipient = "mario.calabria@pec.it"
 subject = "Domanda adesione MN-ATC6 Matteo Calabria"
-attachments = [
-    "Domanda-adesione-MN-ATC-6-2026-MatteoCalabria.pdf",
-    "DocumentoIdentita_MatteoCalabria.pdf",
-]
+attachments = ["Domanda-adesione-MN-ATC-6-2026-MatteoCalabria.pdf"]
 
 [[emails]]
 recipient = "mario.calabria@pec.it"
 subject = "Domanda adesione MN-ATC4 Mario Calabria"
-attachments = [
-    "Domanda-adesione-MN-ATC-4-2026-MarioCalabria.pdf",
-    "DocumentoIdentita_MarioCalabria.pdf",
-]
+attachments = ["Domanda-adesione-MN-ATC-4-2026-MarioCalabria.pdf"]
 
 [[emails]]
 recipient = "mario.calabria@pec.it"
 subject = "Domanda adesione MN-ATC4 Matteo Calabria"
-attachments = [
-    "Domanda-adesione-MN-ATC-4-2026-MatteoCalabria.pdf",
-    "DocumentoIdentita_MatteoCalabria.pdf",
-]
+attachments = ["Domanda-adesione-MN-ATC-4-2026-MatteoCalabria.pdf"]
